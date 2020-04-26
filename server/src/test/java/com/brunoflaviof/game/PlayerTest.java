@@ -23,17 +23,5 @@ public class PlayerTest {
         assertEquals(SPY, spy.getCharacter());
         assertEquals(RESISTANCE, resistance.getCharacter());
     }
-
-    @Test
-    public void shouldBeAbleToDiscoverSpies(){
-        Player spy1 = new Player();
-        Player spy2 = new Player();
-        spy2.setCharacter(SPY);
-        spy1.setCharacter(SPY);
-
-        spy1.discoverSpy(spy2);
-        assertEquals(spy2, spy1.getKnownSpies().get(0));
-    }
-
-
+    
 }
