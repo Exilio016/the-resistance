@@ -1,8 +1,6 @@
-package com.brunoflaviof.game;
+package com.brunoflaviof.resistance.game;
 
-import com.brunoflaviof.game.constants.GameCharacter;
-
-import java.util.List;
+import com.brunoflaviof.resistance.game.constants.GameCharacter;
 
 public class Player {
     private GameCharacter character;
@@ -15,11 +13,4 @@ public class Player {
         return character;
     }
 
-    public void discoverSpy(Player spy2) {
-
-    }
-
-    public List<Player> getKnownSpies() {
-        return null;
-    }
 }

@@ -1,4 +1,4 @@
-package com.brunoflaviof.game.constants;
+package com.brunoflaviof.resistance.game.constants;
 
 public class ErrorMessages {
 

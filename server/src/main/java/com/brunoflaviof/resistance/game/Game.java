@@ -1,8 +1,8 @@
-package com.brunoflaviof.game;
+package com.brunoflaviof.resistance.game;
 
-import com.brunoflaviof.game.constants.GameCharacter;
-import com.brunoflaviof.game.exceptions.MinimumNumberOfPlayersException;
-import com.brunoflaviof.game.exceptions.PlayersLimitExcededException;
+import com.brunoflaviof.resistance.game.constants.GameCharacter;
+import com.brunoflaviof.resistance.game.exceptions.MinimumNumberOfPlayersException;
+import com.brunoflaviof.resistance.game.exceptions.PlayersLimitExcededException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,3 +1,7 @@
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
 # Compiled class file
 *.class
 
@@ -22,10 +26,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-#intellij
-.idea/
-**/.idea/
-server/server.iml
+### IntelliJ IDEA ###
+.idea
+**/.idea
+*.iws
+*.iml
+*.ipr
+
 
 #Maven targets
 **/target/
