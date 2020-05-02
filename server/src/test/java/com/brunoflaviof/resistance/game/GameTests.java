@@ -3,19 +3,19 @@ package com.brunoflaviof.resistance.game;
 import com.brunoflaviof.resistance.game.constants.GameCharacter;
 import com.brunoflaviof.resistance.game.exceptions.MinimumNumberOfPlayersException;
 import com.brunoflaviof.resistance.game.exceptions.PlayersLimitExcededException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class GameTest {
+
+public class GameTests {
 
     private Game game;
     private int nResistance;
     private int nSpy;
 
-    @Before
+    @BeforeEach
     public void CreateGame(){
         this.game = new Game();
         assertNotNull(game);
@@ -28,10 +28,12 @@ public class GameTest {
         assertEquals(p, game.getPlayers().get(0));
     }
 
-    @Test(expected = PlayersLimitExcededException.class)
+    @Test
     public void shouldThrowErrorAfterAdd11Player(){
-        Player p = new Player();
-        addPlayersToGame(11);
+        assertThrows(PlayersLimitExcededException.class, () -> {
+            Player p = new Player();
+            addPlayersToGame(11);
+        });
     }
 
     private void addPlayersToGame(int n){
@@ -39,29 +41,37 @@ public class GameTest {
             game.addPlayer(new Player());
     }
 
-    @Test(expected = MinimumNumberOfPlayersException.class)
+    @Test
     public void shouldThrowErrorAfterStartGameWith0Players(){
-        game.start();
+        assertThrows(MinimumNumberOfPlayersException.class, () -> {
+            game.start();
+        });
     }
-    @Test(expected = MinimumNumberOfPlayersException.class)
+    private void assertNumberOfPlayersException(int numberOfPlayers) {
+        assertThrows(MinimumNumberOfPlayersException.class, () -> {
+            addPlayersToGame(numberOfPlayers);
+            game.start();
+        });
+    }
+    @Test
     public void shouldThrowErrorAfterStartGameWith1Players(){
-        addPlayersToGame(1);
-        game.start();
+        assertNumberOfPlayersException(1);
+
     }
-    @Test(expected = MinimumNumberOfPlayersException.class)
+
+    @Test
     public void shouldThrowErrorAfterStartGameWith2Players(){
-        addPlayersToGame(2);
-        game.start();
+        assertNumberOfPlayersException(2);
+
     }
-    @Test(expected = MinimumNumberOfPlayersException.class)
+
+    @Test
     public void shouldThrowErrorAfterStartGameWith3Players(){
-        addPlayersToGame(3);
-        game.start();
+        assertNumberOfPlayersException(3);
     }
-    @Test(expected = MinimumNumberOfPlayersException.class)
+    @Test
     public void shouldThrowErrorAfterStartGameWith4Players(){
-        addPlayersToGame(4);
-        game.start();
+        assertNumberOfPlayersException(4);
     }
 
     @Test
@@ -99,7 +109,7 @@ public class GameTest {
         game.start();
 
         countCharacters();
-        Assert.assertEquals(nSpy, GameCharacter.getNumberOfSpies(nPlayers));
+        assertEquals(nSpy, GameCharacter.getNumberOfSpies(nPlayers));
         assertEquals(nResistance, GameCharacter.getNumberOfResistances(nPlayers));
     }
 
