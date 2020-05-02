@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class LobbyRepo {
     Map<String, Lobby> lobbies = new HashMap<>();
 

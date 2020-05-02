@@ -13,7 +13,7 @@ public class LobbyModel {
         return name;
     }
 
-    public boolean isHasPassword() {
+    public boolean hasPassword() {
         return hasPassword;
     }
 }
