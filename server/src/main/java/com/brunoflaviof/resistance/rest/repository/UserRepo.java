@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Component
 public class UserRepo {
     Map<UUID, User> users = new HashMap<>();
 

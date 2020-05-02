@@ -15,10 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class RestController implements LobbyController, UserController {
 
+    private final LobbyRepo lobbyRepo;
+    private final UserRepo userRepo;
+
     @Autowired
-    private LobbyRepo lobbyRepo;
-    @Autowired
-    private UserRepo userRepo;
+    public RestController(LobbyRepo lobbyRepo, UserRepo userRepo) {
+        this.lobbyRepo = lobbyRepo;
+        this.userRepo = userRepo;
+    }
 
     @Override
     public LobbyList getLobbies() {
