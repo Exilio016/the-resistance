@@ -34,7 +34,7 @@ public class RestControllerTests {
 
 
     @InjectMocks
-    private RestController controller = new RestController();
+    private RestController controller = new RestController(mockedLobbies, mockedUsers);
 
     List lobbyList = mock(List.class);
     private String USER_ID;
