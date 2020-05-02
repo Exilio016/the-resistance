@@ -4,6 +4,7 @@ import com.brunoflaviof.resistance.rest.controller.exception.EmptyUserNameExcept
 import com.brunoflaviof.resistance.rest.controller.exception.LobbySameNameException;
 import com.brunoflaviof.resistance.rest.jwt.JWTUtil;
 import com.brunoflaviof.resistance.rest.model.CreateLobby;
+import com.brunoflaviof.resistance.rest.model.LobbyList;
 import com.brunoflaviof.resistance.rest.model.LobbyModel;
 import com.brunoflaviof.resistance.rest.model.UserModel;
 import com.brunoflaviof.resistance.rest.repository.LobbyRepo;
@@ -12,45 +13,35 @@ import com.brunoflaviof.resistance.rest.repository.data.Lobby;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class RestControllerTests {
 
-    @Spy
-    private LobbyRepo mockedLobbies;
-    @Spy
-    private UserRepo mockedUsers;
-
-
-    @InjectMocks
-    private RestController controller = new RestController(mockedLobbies, mockedUsers);
-
-    List lobbyList = mock(List.class);
+    private RestController controller;
     private String USER_ID;
 
     @BeforeEach
-    public void mockList() throws NoSuchFieldException {
-        lobbyList.add(new LobbyModel("test1", false));
-        lobbyList.add(new LobbyModel("test2", false));
-        when(mockedLobbies.getAllModel()).thenReturn(lobbyList);
+    public void before() throws NoSuchFieldException {
+        controller = new RestController(new LobbyRepo(), new UserRepo());
         JWTUtil.setSecret("MySecret");
         USER_ID = "admin";
     }
 
     @Test
     public void shouldBeAbleToGetLobbyList(){
-        assertEquals(lobbyList, controller.getLobbies().getLobbies());
+        String name = "name";
+        controller.createLobby(new CreateLobby(USER_ID, name, null));
+        LobbyList list = controller.getLobbies();
+        assertEquals(1, list.getLobbies().size());
+        LobbyModel lobbyModel = list.getLobbies().get(0);
+        assertEquals(name, lobbyModel.getName());
+        assertFalse(lobbyModel.hasPassword());
     }
 
     @Test
