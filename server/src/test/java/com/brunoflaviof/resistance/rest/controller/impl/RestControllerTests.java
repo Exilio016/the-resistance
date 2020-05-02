@@ -9,24 +9,23 @@ import com.brunoflaviof.resistance.rest.model.UserModel;
 import com.brunoflaviof.resistance.rest.repository.LobbyRepo;
 import com.brunoflaviof.resistance.rest.repository.UserRepo;
 import com.brunoflaviof.resistance.rest.repository.data.Lobby;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
-public class RestControllerTest {
+@ExtendWith(MockitoExtension.class)
+public class RestControllerTests {
 
     @Spy
     private LobbyRepo mockedLobbies;
@@ -40,7 +39,7 @@ public class RestControllerTest {
     List lobbyList = mock(List.class);
     private String USER_ID;
 
-    @Before
+    @BeforeEach
     public void mockList() throws NoSuchFieldException {
         lobbyList.add(new LobbyModel("test1", false));
         lobbyList.add(new LobbyModel("test2", false));
@@ -71,11 +70,13 @@ public class RestControllerTest {
         assertEquals(l, controller.getLobbyByName(name));
     }
 
-    @Test(expected = LobbySameNameException.class)
+    @Test
     public void shouldNotBeAbleToCreate2LobbiesWithSameName(){
         String name = "sameName";
         controller.createLobby(new CreateLobby(USER_ID, name, null));
-        controller.createLobby(new CreateLobby(USER_ID, name, null));
+        assertThrows(LobbySameNameException.class, () -> {
+            controller.createLobby(new CreateLobby(USER_ID, name, null));
+        });
     }
 
     @Test
@@ -87,14 +88,18 @@ public class RestControllerTest {
         assertNotEquals("", user.getToken());
     }
 
-    @Test(expected = EmptyUserNameException.class)
+    @Test
     public void userShouldNotHaveEmptyName(){
-        controller.createUser("");
+        assertThrows(EmptyUserNameException.class, () -> {
+            controller.createUser("");
+        });
     }
 
-    @Test(expected = EmptyUserNameException.class)
+    @Test
     public void userShouldNotHaveNullName() {
-        controller.createUser(null);
+        assertThrows(EmptyUserNameException.class, () -> {
+            controller.createUser(null);
+        });
 
     }
 

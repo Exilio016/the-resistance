@@ -1,12 +1,12 @@
 package com.brunoflaviof.resistance.game;
 
 import com.brunoflaviof.resistance.game.constants.GameCharacter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PlayerTest {
+
+public class PlayerTests {
 
     @Test
     public void shouldBeAbleToCreatePlayer(){
@@ -19,8 +19,8 @@ public class PlayerTest {
         Player resistance = new Player();
         spy.setCharacter(GameCharacter.SPY);
         resistance.setCharacter(GameCharacter.RESISTANCE);
-        Assert.assertEquals(GameCharacter.SPY, spy.getCharacter());
-        Assert.assertEquals(GameCharacter.RESISTANCE, resistance.getCharacter());
+        assertEquals(GameCharacter.SPY, spy.getCharacter());
+        assertEquals(GameCharacter.RESISTANCE, resistance.getCharacter());
     }
     
 }

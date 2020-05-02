@@ -13,8 +13,6 @@ import com.brunoflaviof.resistance.rest.repository.data.Lobby;
 import com.brunoflaviof.resistance.rest.repository.data.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.UUID;
-
 public class RestController implements LobbyController, UserController {
 
     @Autowired
