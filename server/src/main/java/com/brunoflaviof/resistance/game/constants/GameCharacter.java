@@ -1,7 +1,7 @@
-package com.brunoflaviof.game.constants;
+package com.brunoflaviof.resistance.game.constants;
 
-import com.brunoflaviof.game.exceptions.MinimumNumberOfPlayersException;
-import com.brunoflaviof.game.exceptions.PlayersLimitExcededException;
+import com.brunoflaviof.resistance.game.exceptions.MinimumNumberOfPlayersException;
+import com.brunoflaviof.resistance.game.exceptions.PlayersLimitExcededException;
 
 public enum GameCharacter {
     SPY,

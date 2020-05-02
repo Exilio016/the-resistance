@@ -1,6 +1,6 @@
-package com.brunoflaviof.game.exceptions;
+package com.brunoflaviof.resistance.game.exceptions;
 
-import com.brunoflaviof.game.constants.ErrorMessages;
+import com.brunoflaviof.resistance.game.constants.ErrorMessages;
 
 public class MinimumNumberOfPlayersException extends RuntimeException {
     public MinimumNumberOfPlayersException(){
