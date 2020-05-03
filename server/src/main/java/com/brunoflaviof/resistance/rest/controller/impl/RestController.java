@@ -13,15 +13,20 @@ import com.brunoflaviof.resistance.rest.repository.data.Lobby;
 import com.brunoflaviof.resistance.rest.repository.data.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.UUID;
+
+@org.springframework.web.bind.annotation.RestController
 public class RestController implements LobbyController, UserController {
 
     private final LobbyRepo lobbyRepo;
     private final UserRepo userRepo;
+    private final JWTUtil jwtUtil;
 
     @Autowired
-    public RestController(LobbyRepo lobbyRepo, UserRepo userRepo) {
+    public RestController(LobbyRepo lobbyRepo, UserRepo userRepo, JWTUtil jwtUtil) {
         this.lobbyRepo = lobbyRepo;
         this.userRepo = userRepo;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -30,8 +35,8 @@ public class RestController implements LobbyController, UserController {
     }
 
     @Override
-    public void createLobby(CreateLobby lobby) {
-        lobbyRepo.createLobby(lobby.getUserId(), lobby.getName(), lobby.getPassword());
+    public void createLobby(String userID, CreateLobby lobby) {
+        lobbyRepo.createLobby(userID, lobby.getName(), lobby.getPassword(), lobby.getMeetingURL());
     }
 
     @Override
@@ -40,7 +45,7 @@ public class RestController implements LobbyController, UserController {
             throw new EmptyUserNameException();
 
         User u = userRepo.createUser(displayName);
-        return new UserModel(u.getUserID(), JWTUtil.generateToken(u));
+        return new UserModel(u.getUserID(), jwtUtil.generateToken(u));
     }
 
     @Override
@@ -50,7 +55,7 @@ public class RestController implements LobbyController, UserController {
 
 
     public UserModel verifyToken(String token) {
-        User u = userRepo.getUser(JWTUtil.getUserIDFromToken(token));
+        User u = userRepo.getUser(jwtUtil.getUserIDFromToken(token));
         return new UserModel(u.getUserID(), token);
     }
 }

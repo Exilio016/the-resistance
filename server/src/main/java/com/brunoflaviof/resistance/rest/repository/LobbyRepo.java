@@ -31,10 +31,11 @@ public class LobbyRepo {
         lobbies.put(l.getName(), l);
     }
 
-    public void createLobby(String adminId, String name, Optional<String> password) {
+    public void createLobby(String adminId, String name, Optional<String> password, Optional<String> meetingURL) {
         if(lobbies.containsKey(name))
             throw new LobbySameNameException();
         Lobby l = new Lobby(adminId, name, password.orElse(null));
+        meetingURL.ifPresent(l::setMeetingURL);
         lobbies.put(name, l);
     }
 }

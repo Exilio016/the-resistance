@@ -28,15 +28,16 @@ public class RestControllerTests {
 
     @BeforeEach
     public void before() throws NoSuchFieldException {
-        controller = new RestController(new LobbyRepo(), new UserRepo());
-        JWTUtil.setSecret("MySecret");
+        JWTUtil util = new JWTUtil();
+        controller = new RestController(new LobbyRepo(), new UserRepo(), util);
+        util.setSecret("MySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecret");
         USER_ID = "admin";
     }
 
     @Test
     public void shouldBeAbleToGetLobbyList(){
         String name = "name";
-        controller.createLobby(new CreateLobby(USER_ID, name, null));
+        controller.createLobby(USER_ID, getLobby(name, null));
         LobbyList list = controller.getLobbies();
         assertEquals(1, list.getLobbies().size());
         LobbyModel lobbyModel = list.getLobbies().get(0);
@@ -49,24 +50,28 @@ public class RestControllerTests {
         String name = "withPass";
         String password = "1234";
         Lobby l = new Lobby(USER_ID, name, password);
-        controller.createLobby(new CreateLobby(USER_ID, name, password));
+        controller.createLobby(USER_ID, getLobby(name, password));
         assertEquals(l, controller.getLobbyByName(name));
+    }
+
+    private CreateLobby getLobby(String name, String password) {
+        return new CreateLobby(name, password, null);
     }
 
     @Test
     public void shouldBeAbleToCreateLobby(){
         String name = "withoutPass";
         Lobby l = new Lobby(USER_ID, name, null);
-        controller.createLobby(new CreateLobby(USER_ID, name, null));
+        controller.createLobby(USER_ID, getLobby(name, null));
         assertEquals(l, controller.getLobbyByName(name));
     }
 
     @Test
     public void shouldNotBeAbleToCreate2LobbiesWithSameName(){
         String name = "sameName";
-        controller.createLobby(new CreateLobby(USER_ID, name, null));
+        controller.createLobby(USER_ID, getLobby(name, null));
         assertThrows(LobbySameNameException.class, () -> {
-            controller.createLobby(new CreateLobby(USER_ID, name, null));
+            controller.createLobby(USER_ID, getLobby(name, null));
         });
     }
 
