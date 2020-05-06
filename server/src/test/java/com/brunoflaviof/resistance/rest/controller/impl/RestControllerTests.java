@@ -14,10 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -26,10 +26,17 @@ public class RestControllerTests {
     private RestController controller;
     private String USER_ID;
 
+    @Autowired
+    LobbyRepo lobbyRepo;
+    @Autowired
+    UserRepo userRepo;
+
     @BeforeEach
     public void before() throws NoSuchFieldException {
+        lobbyRepo.deleteAll();
+        userRepo.deleteAll();
         JWTUtil util = new JWTUtil();
-        controller = new RestController(new LobbyRepo(), new UserRepo(), util);
+        controller = new RestController(lobbyRepo, userRepo, util);
         util.setSecret("MySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecret");
         USER_ID = "admin";
     }
@@ -42,14 +49,14 @@ public class RestControllerTests {
         assertEquals(1, list.getLobbies().size());
         LobbyModel lobbyModel = list.getLobbies().get(0);
         assertEquals(name, lobbyModel.getName());
-        assertFalse(lobbyModel.hasPassword());
+        assertFalse(lobbyModel.isProtected());
     }
 
     @Test
     public void shouldBeAbleToCreateLobbyWithPassword(){
         String name = "withPass";
         String password = "1234";
-        Lobby l = new Lobby(USER_ID, name, password);
+        Lobby l = new Lobby(USER_ID, name, password, null);
         controller.createLobby(USER_ID, getLobby(name, password));
         assertEquals(l, controller.getLobbyByName(name));
     }
@@ -61,7 +68,7 @@ public class RestControllerTests {
     @Test
     public void shouldBeAbleToCreateLobby(){
         String name = "withoutPass";
-        Lobby l = new Lobby(USER_ID, name, null);
+        Lobby l = new Lobby(USER_ID, name, null, null);
         controller.createLobby(USER_ID, getLobby(name, null));
         assertEquals(l, controller.getLobbyByName(name));
     }
