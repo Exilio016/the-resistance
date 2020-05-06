@@ -1,27 +1,12 @@
 package com.brunoflaviof.resistance.rest.repository;
 
 import com.brunoflaviof.resistance.rest.repository.data.User;
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
-@Component
-public class UserRepo {
-    Map<UUID, User> users = new HashMap<>();
-
-    public User createUser(String name){
-        User u = new User(name);
-        users.put(u.getUserID(), u);
-        return u;
-    }
-
-    public User getUser(UUID userID){
-        return users.get(userID);
-    }
-
-    public void removeUser(UUID userID){
-        users.remove(userID);
-    }
+public interface UserRepo extends CrudRepository<User, UUID> {
+    User getByUserID(UUID id);
+    List<User> getByName(String name);
 }

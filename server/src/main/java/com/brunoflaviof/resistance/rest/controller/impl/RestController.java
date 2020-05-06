@@ -3,9 +3,11 @@ package com.brunoflaviof.resistance.rest.controller.impl;
 import com.brunoflaviof.resistance.rest.controller.LobbyController;
 import com.brunoflaviof.resistance.rest.controller.UserController;
 import com.brunoflaviof.resistance.rest.controller.exception.EmptyUserNameException;
+import com.brunoflaviof.resistance.rest.controller.exception.LobbySameNameException;
 import com.brunoflaviof.resistance.rest.jwt.JWTUtil;
 import com.brunoflaviof.resistance.rest.model.CreateLobby;
 import com.brunoflaviof.resistance.rest.model.LobbyList;
+import com.brunoflaviof.resistance.rest.model.LobbyModel;
 import com.brunoflaviof.resistance.rest.model.UserModel;
 import com.brunoflaviof.resistance.rest.repository.LobbyRepo;
 import com.brunoflaviof.resistance.rest.repository.UserRepo;
@@ -13,7 +15,8 @@ import com.brunoflaviof.resistance.rest.repository.data.Lobby;
 import com.brunoflaviof.resistance.rest.repository.data.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestController implements LobbyController, UserController {
@@ -31,12 +34,24 @@ public class RestController implements LobbyController, UserController {
 
     @Override
     public LobbyList getLobbies() {
-        return new LobbyList(lobbyRepo.getAllModel());
+        return new LobbyList(getLobbyModels(lobbyRepo.findAll()));
+    }
+
+    private List<LobbyModel> getLobbyModels(Iterable<Lobby> lobbies) {
+        List<LobbyModel> list = new ArrayList<>();
+        for(Lobby l : lobbies){
+            list.add(new LobbyModel(l.getName(), l.hasPassword()));
+        }
+        return list;
     }
 
     @Override
     public void createLobby(String userID, CreateLobby lobby) {
-        lobbyRepo.createLobby(userID, lobby.getName(), lobby.getPassword(), lobby.getMeetingURL());
+        if(lobbyRepo.findByName(lobby.getName()) == null) {
+            lobbyRepo.save(new Lobby(userID, lobby.getName(), lobby.getPassword().orElse(null), lobby.getMeetingURL().orElse(null)));
+            return;
+        }
+        throw new LobbySameNameException();
     }
 
     @Override
@@ -44,18 +59,19 @@ public class RestController implements LobbyController, UserController {
         if(displayName == null || displayName.isEmpty())
             throw new EmptyUserNameException();
 
-        User u = userRepo.createUser(displayName);
+        User u = new User(displayName);
+        userRepo.save(u);
         return new UserModel(u.getUserID(), jwtUtil.generateToken(u));
     }
 
     @Override
     public Lobby getLobbyByName(String name) {
-        return lobbyRepo.getLobby(name);
+        return lobbyRepo.findByName(name);
     }
 
 
     public UserModel verifyToken(String token) {
-        User u = userRepo.getUser(jwtUtil.getUserIDFromToken(token));
+        User u = userRepo.getByUserID(jwtUtil.getUserIDFromToken(token));
         return new UserModel(u.getUserID(), token);
     }
 }

@@ -1,16 +1,25 @@
 package com.brunoflaviof.resistance.rest.repository.data;
 
-public class Lobby {
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
-    private final String adminId;
-    private final String name;
-    private final String password;
+@Entity
+public class Lobby {
+    private String adminId;
+    @Id
+    private String name;
+    private String password;
     private String meetingURL;
 
-    public Lobby(String adminId, String name, String password) {
+    protected Lobby(){
+
+    }
+
+    public Lobby(String adminId, String name, String password, String meetingURL) {
         this.adminId = adminId;
         this.name = name;
         this.password = password;
+        this.meetingURL = meetingURL;
     }
 
     public String getAdminId() {
@@ -21,9 +30,6 @@ public class Lobby {
         return meetingURL;
     }
 
-    public void setMeetingURL(String meetingURL) {
-        this.meetingURL = meetingURL;
-    }
 
     public String getName() {
         return name;

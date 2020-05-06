@@ -8,7 +8,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
@@ -55,6 +54,6 @@ public class AuthenticationFilter extends HttpFilter {
     private User getUserFomHeaderArray(String headerArray) {
         String token = headerArray;
         UUID userID = jwtUtil.getUserIDFromToken(token);
-        return users.getUser(userID);
+        return users.getByUserID(userID);
     }
 }
