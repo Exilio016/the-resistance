@@ -1,7 +1,9 @@
 package com.brunoflaviof.resistance.rest.repository.data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Lobby {
@@ -9,27 +11,24 @@ public class Lobby {
     @Id
     private String name;
     private String password;
-    private String meetingURL;
+
+    @OneToMany(mappedBy = "lobby", fetch = FetchType.EAGER)
+    private List<User> users;
 
     protected Lobby(){
 
     }
 
-    public Lobby(String adminId, String name, String password, String meetingURL) {
+    public Lobby(String adminId, String name, String password) {
         this.adminId = adminId;
         this.name = name;
         this.password = password;
-        this.meetingURL = meetingURL;
+        this.users = new ArrayList<>();
     }
 
     public String getAdminId() {
         return adminId;
     }
-
-    public String getMeetingURL() {
-        return meetingURL;
-    }
-
 
     public String getName() {
         return name;
@@ -37,6 +36,14 @@ public class Lobby {
 
     public boolean hasPassword(){
         return password != null;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @org.springframework.web.bind.annotation.RestController
 public class RestController implements LobbyController, UserController {
@@ -47,8 +48,13 @@ public class RestController implements LobbyController, UserController {
 
     @Override
     public void createLobby(String userID, CreateLobby lobby) {
+        User u = userRepo.getByUserID(UUID.fromString(userID));
         if(lobbyRepo.findByName(lobby.getName()) == null) {
-            lobbyRepo.save(new Lobby(userID, lobby.getName(), lobby.getPassword().orElse(null), lobby.getMeetingURL().orElse(null)));
+            Lobby l = new Lobby(userID, lobby.getName(), lobby.getPassword().orElse(null));
+            u.setLobby(l);
+            l.getUsers().add(u);
+            lobbyRepo.save(l);
+            userRepo.save(u);
             return;
         }
         throw new LobbySameNameException();
