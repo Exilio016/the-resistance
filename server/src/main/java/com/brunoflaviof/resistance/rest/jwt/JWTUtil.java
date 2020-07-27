@@ -3,12 +3,9 @@ package com.brunoflaviof.resistance.rest.jwt;
 import com.brunoflaviof.resistance.rest.repository.data.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.TestPropertySource;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;

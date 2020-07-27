@@ -39,7 +39,7 @@ public class AuthenticationFilter extends HttpFilter {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    private User validateAuthHeader(HttpServletRequest request, HttpServletResponse response, FilterChain chain, String authHeader) throws IOException, ServletException {
+    private User validateAuthHeader(HttpServletRequest request, HttpServletResponse response, FilterChain chain, String authHeader) {
         String[] authHeaderArray = authHeader.split(" ");
         if(isAuthenticationHeaderValid(authHeaderArray)) {
             return getUserFomHeaderArray(authHeaderArray[1]);
@@ -52,8 +52,7 @@ public class AuthenticationFilter extends HttpFilter {
     }
 
     private User getUserFomHeaderArray(String headerArray) {
-        String token = headerArray;
-        UUID userID = jwtUtil.getUserIDFromToken(token);
+        UUID userID = jwtUtil.getUserIDFromToken(headerArray);
         return users.getByUserID(userID);
     }
 }

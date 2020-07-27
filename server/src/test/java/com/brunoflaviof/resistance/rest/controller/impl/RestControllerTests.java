@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -102,9 +101,7 @@ public class RestControllerTests {
     public void shouldNotBeAbleToCreate2LobbiesWithSameName(){
         String name = "sameName";
         controller.createLobby(USER_ID, getLobby(name, null));
-        assertThrows(LobbySameNameException.class, () -> {
-            controller.createLobby(USER_ID, getLobby(name, null));
-        });
+        assertThrows(LobbySameNameException.class, () -> controller.createLobby(USER_ID, getLobby(name, null)));
     }
 
     @Test
@@ -118,16 +115,12 @@ public class RestControllerTests {
 
     @Test
     public void userShouldNotHaveEmptyName(){
-        assertThrows(EmptyUserNameException.class, () -> {
-            controller.createUser("");
-        });
+        assertThrows(EmptyUserNameException.class, () -> controller.createUser(""));
     }
 
     @Test
     public void userShouldNotHaveNullName() {
-        assertThrows(EmptyUserNameException.class, () -> {
-            controller.createUser(null);
-        });
+        assertThrows(EmptyUserNameException.class, () -> controller.createUser(null));
 
     }
 

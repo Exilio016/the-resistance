@@ -43,9 +43,7 @@ public class GameTests {
 
     @Test
     public void shouldThrowErrorAfterStartGameWith0Players(){
-        assertThrows(MinimumNumberOfPlayersException.class, () -> {
-            game.start();
-        });
+        assertThrows(MinimumNumberOfPlayersException.class, () -> game.start());
     }
     private void assertNumberOfPlayersException(int numberOfPlayers) {
         assertThrows(MinimumNumberOfPlayersException.class, () -> {

@@ -1,10 +1,6 @@
 package com.brunoflaviof.resistance.rest.repository.data;
-import jdk.internal.vm.annotation.Stable;
-import org.hibernate.annotations.ManyToAny;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
