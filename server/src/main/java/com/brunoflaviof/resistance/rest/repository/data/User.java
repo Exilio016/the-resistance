@@ -1,16 +1,19 @@
 package com.brunoflaviof.resistance.rest.repository.data;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name="users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID userID ;
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "lobby")
+    private Lobby lobby;
 
     protected User(){
 
@@ -26,5 +29,13 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
     }
 }

@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.*;
 public interface UserController {
 
     @GetMapping("/user")
-    public UserModel createUser(@RequestParam("name") String displayName);
+    UserModel createUser(@RequestParam("name") String displayName);
 
 }

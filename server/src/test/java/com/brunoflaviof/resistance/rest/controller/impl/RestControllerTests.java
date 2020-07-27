@@ -10,12 +10,16 @@ import com.brunoflaviof.resistance.rest.model.UserModel;
 import com.brunoflaviof.resistance.rest.repository.LobbyRepo;
 import com.brunoflaviof.resistance.rest.repository.UserRepo;
 import com.brunoflaviof.resistance.rest.repository.data.Lobby;
+import com.brunoflaviof.resistance.rest.repository.data.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,12 +37,11 @@ public class RestControllerTests {
 
     @BeforeEach
     public void before() throws NoSuchFieldException {
-        lobbyRepo.deleteAll();
         userRepo.deleteAll();
-        JWTUtil util = new JWTUtil();
+        lobbyRepo.deleteAll();
+        JWTUtil util = new JWTUtil("zqLob7ZAVYar8tfVa5qLPJKRBgxLhQhh8BLZFBth8SLmiZ7vCN4iuAeyMSFPWb95DPqj22TFJXn4VeeT6e7mTiRBA4Rao82ZgGDdptMjm5DzCmQy2q7cJ3vtfjaxyiji");
         controller = new RestController(lobbyRepo, userRepo, util);
-        util.setSecret("MySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecretMySecret");
-        USER_ID = "admin";
+        USER_ID = controller.createUser("test user").getUserId().toString();
     }
 
     @Test
@@ -56,8 +59,7 @@ public class RestControllerTests {
     public void shouldBeAbleToCreateLobbyWithPassword(){
         String name = "withPass";
         String password = "1234";
-        Lobby l = new Lobby(USER_ID, name, password, null);
-        controller.createLobby(USER_ID, getLobby(name, password));
+        Lobby l = createLobby(name, password);
         assertEquals(l, controller.getLobbyByName(name));
     }
 
@@ -68,18 +70,38 @@ public class RestControllerTests {
     @Test
     public void shouldBeAbleToCreateLobby(){
         String name = "withoutPass";
-        Lobby l = new Lobby(USER_ID, name, null, null);
-        controller.createLobby(USER_ID, getLobby(name, null));
+        Lobby l = createLobby(name, null);
         assertEquals(l, controller.getLobbyByName(name));
+    }
+
+    private Lobby createLobby(String name, String password) {
+        controller.createLobby(USER_ID, getLobby(name, password));
+        return lobbyRepo.findByName(name);
+    }
+
+    @Test
+    public void shouldBeAdminAfterCreateLobby(){
+        Lobby l = createLobby(getRandomName(), null);
+        assertEquals(USER_ID, l.getAdminId());
+    }
+
+    private String getRandomName() {
+        return UUID.randomUUID().toString();
+    }
+
+    @Test
+    public void afterCreateLobbyShouldBeConnected(){
+        Lobby l = createLobby("adminConnection", null);
+        List<User> users = l.getUsers();
+        assertEquals(1, users.size());
+        assertEquals(USER_ID, users.get(0).getUserID().toString());
     }
 
     @Test
     public void shouldNotBeAbleToCreate2LobbiesWithSameName(){
         String name = "sameName";
         controller.createLobby(USER_ID, getLobby(name, null));
-        assertThrows(LobbySameNameException.class, () -> {
-            controller.createLobby(USER_ID, getLobby(name, null));
-        });
+        assertThrows(LobbySameNameException.class, () -> controller.createLobby(USER_ID, getLobby(name, null)));
     }
 
     @Test
@@ -93,16 +115,12 @@ public class RestControllerTests {
 
     @Test
     public void userShouldNotHaveEmptyName(){
-        assertThrows(EmptyUserNameException.class, () -> {
-            controller.createUser("");
-        });
+        assertThrows(EmptyUserNameException.class, () -> controller.createUser(""));
     }
 
     @Test
     public void userShouldNotHaveNullName() {
-        assertThrows(EmptyUserNameException.class, () -> {
-            controller.createUser(null);
-        });
+        assertThrows(EmptyUserNameException.class, () -> controller.createUser(null));
 
     }
 

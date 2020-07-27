@@ -10,7 +10,7 @@ import java.util.List;
 public class Game {
     private static final int PLAYERS_MAX_LIMIT = 10;
     private static final int PLAYERS_MIN_LIMIT = 5;
-    private List<Player> players;
+    private final List<Player> players;
     private Player leader;
 
 

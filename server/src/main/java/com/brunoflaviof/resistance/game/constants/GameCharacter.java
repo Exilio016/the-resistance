@@ -7,7 +7,7 @@ public enum GameCharacter {
     SPY,
     RESISTANCE;
 
-   private static int[] ASSIGN_MATRIX = new int[] {3, 4, 4, 5, 6, 6};
+   private static final int[] ASSIGN_MATRIX = new int[] {3, 4, 4, 5, 6, 6};
 
     @Override
     public String toString() {
