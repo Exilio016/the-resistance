@@ -4,10 +4,11 @@ import com.brunoflaviof.resistance.game.constants.GameCharacter;
 import com.brunoflaviof.resistance.game.exceptions.MinimumNumberOfPlayersException;
 import com.brunoflaviof.resistance.game.exceptions.PlayersLimitExcededException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game implements Serializable {
     private static final int PLAYERS_MAX_LIMIT = 10;
     private static final int PLAYERS_MIN_LIMIT = 5;
     private final List<Player> players;

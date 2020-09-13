@@ -2,11 +2,9 @@ package com.brunoflaviof.resistance.rest.controller.impl;
 
 import com.brunoflaviof.resistance.rest.controller.exception.EmptyUserNameException;
 import com.brunoflaviof.resistance.rest.controller.exception.LobbySameNameException;
-import com.brunoflaviof.resistance.rest.jwt.JWTUtil;
-import com.brunoflaviof.resistance.rest.model.CreateLobby;
-import com.brunoflaviof.resistance.rest.model.LobbyList;
-import com.brunoflaviof.resistance.rest.model.LobbyModel;
-import com.brunoflaviof.resistance.rest.model.UserModel;
+import com.brunoflaviof.resistance.rest.controller.exception.LobbyNotExistingException;
+import com.brunoflaviof.resistance.rest.controller.exception.WrongPasswordException;
+import com.brunoflaviof.resistance.rest.model.*;
 import com.brunoflaviof.resistance.rest.repository.LobbyRepo;
 import com.brunoflaviof.resistance.rest.repository.UserRepo;
 import com.brunoflaviof.resistance.rest.repository.data.Lobby;
@@ -20,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,8 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class RestControllerTests {
 
-    private RestController controller;
     private String USER_ID;
+    @Autowired
+    private RestController controller;
 
     @Autowired
     LobbyRepo lobbyRepo;
@@ -39,8 +39,6 @@ public class RestControllerTests {
     public void before() throws NoSuchFieldException {
         userRepo.deleteAll();
         lobbyRepo.deleteAll();
-        JWTUtil util = new JWTUtil("zqLob7ZAVYar8tfVa5qLPJKRBgxLhQhh8BLZFBth8SLmiZ7vCN4iuAeyMSFPWb95DPqj22TFJXn4VeeT6e7mTiRBA4Rao82ZgGDdptMjm5DzCmQy2q7cJ3vtfjaxyiji");
-        controller = new RestController(lobbyRepo, userRepo, util);
         USER_ID = controller.createUser("test user").getUserId().toString();
     }
 
@@ -130,5 +128,24 @@ public class RestControllerTests {
         UserModel verifiedUser = controller.verifyToken(user.getToken());
         assertEquals(user.getUserId(), verifiedUser.getUserId());
         assertEquals(user.getToken(), verifiedUser.getToken());
+    }
+	
+	@Test
+	public void tryingToConnectToANonExistingLobbyShouldThrowException(){
+		assertThrows(LobbyNotExistingException.class, () -> {
+			String lobbyName = "name";
+			Lobby l = controller.connectToLobby(USER_ID, new ConnectLobby(lobbyName, null));
+		});
+	}
+
+	@Test
+    public void connectingToALobbyUsingWrongPasswordShouldThrowException(){
+        String lobbyName = "name";
+        String user = controller.createUser("user").getUserId().toString();
+        Lobby l = createLobby(lobbyName, "1234");
+        assertThrows(WrongPasswordException.class, () ->
+                controller.connectToLobby(user, new ConnectLobby(lobbyName, "123")));
+        assertThrows(WrongPasswordException.class, () ->
+                controller.connectToLobby(user, new ConnectLobby(lobbyName, null)));
     }
 }
