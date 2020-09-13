@@ -1,8 +1,11 @@
 package com.brunoflaviof.resistance.rest.repository.data;
 
+import com.brunoflaviof.resistance.game.Game;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 @Entity
 public class Lobby {
@@ -10,6 +13,7 @@ public class Lobby {
     @Id
     private String name;
     private String password;
+    private Game game;
 
     @OneToMany(mappedBy = "lobby", fetch = FetchType.EAGER)
     private List<User> users;
@@ -40,9 +44,21 @@ public class Lobby {
     public List<User> getUsers() {
         return users;
     }
-
-    public void setUsers(List<User> users) {
+    
+    public void setUsers( List<User> users){
         this.users = users;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override
